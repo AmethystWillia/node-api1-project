@@ -5,7 +5,7 @@ const Users = require('./users/model');
 const server = express();
 server.use(express.json());
 
-// [GET] Requests
+// [ GET ] Requests
 server.get('/api/users', (req, res) => {
     Users.find()
         .then(users => {
@@ -32,7 +32,22 @@ server.get('/api/users/:id', (req, res) => {
         })
 });
 
-// server.post();
+// [ POST ] Requests
+server.post('/api/users', (req, res) => {
+    const { name, bio } = req.body;
+
+    Users.insert({ name, bio })
+        .then(user => {
+            if (name === undefined || bio === undefined) {
+                res.status(400).json({ message: "Please provide name and bio for the user" });
+            } else {
+                res.status(201).json(user);
+            }
+        })
+        .catch(() => {
+            res.status(500).json({ message: "There was an error while saving the user to the database" });
+        })
+});
 
 // server.put();
 
